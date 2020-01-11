@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskserver-deployment
+  labels:
+    app: taskserver
+spec:
+  selector:
+    matchLabels:
+      app: taskserver
+  template:
+    metadata:
+      labels:
+        app: taskserver
+    spec:
+      containers:
+      - image: registry.traefik.k8s.darkgamex.ch/taskserver:v1.1.0
+        imagePullPolicy: Always
+        name: taskserver-taskd-container
+        stdin: true
+        tty: true
+        env:
+        - name: TASKDDATA
+          value: "/home/taskserver/.taskserver"
+        ports:
+        # TCP port for taskd
+        - containerPort: 53589
+        readinessProbe:
+          tcpSocket:
+            port: 53589
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 53589
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /home/taskserver/.taskserver
+          name: taskserver-folder
+        - mountPath: /home/taskserver/.taskserver/ssl
+          name: taskserver-ssl
+        - mountPath: /home/taskserver/.taskserver/orgs
+          name: taskserver-orgs
+        - mountPath: /home/taskserver/.taskserver/config
+          name: taskserver-config
+          subPath: config
+        securityContext:
+          runAsUser: 911
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+      volumes:
+      - name: taskserver-folder
+        emptyDir: {}
+      - name: taskserver-ssl
+        secret:
+          secretName: taskserver-ssl
+      - name: taskserver-orgs
+        persistentVolumeClaim:
+          claimName: taskserver-orgs
+      - name: taskserver-config
+        configMap:
+          name: taskserver-config
