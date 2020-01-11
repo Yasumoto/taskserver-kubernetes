@@ -14,7 +14,7 @@ spec:
         app: taskserver
     spec:
       containers:
-      - image: registry.traefik.k8s.darkgamex.ch/taskserver:v1.1.0
+      - image: yhaenggi/taskserver:v1.1.0
         imagePullPolicy: Always
         name: taskserver-taskd-container
         stdin: true
