@@ -1,4 +1,4 @@
 create new certs with the pki tool in taskserver git repo.
 
 to create the k8s secrets, cd into the ssl dir where you have your certs and run this:
-kubectl create secret generic taskserver-ssl --from-file=./client.cert.pem --from-file=./client.key.pem --from-file=./server.cert.pem --from-file=./server.key.pem --from-file=./server.crl.pem --from-file=./ca.cert.pem
+kubectl create secret generic taskserver-ssl --from-file=./ca.cert.pem --from-file=./ca.key.pem --from-file=./client.cert.pem --from-file=./client.key.pem --from-file=./server.cert.pem --from-file=./server.key.pem --from-file=./server.crl.pem
