@@ -3,14 +3,10 @@ kind: Service
 metadata:
   name: taskserver-service-tcp
   namespace: taskserver
-  annotations:
-    metallb.universe.tf/allow-shared-ip: "true"
   labels:
     app: taskserver
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.13.8.30
-  externalTrafficPolicy: Local
   ports:
     - name: taskserver-tcp
       port: 53589
